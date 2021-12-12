@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
@@ -19,9 +20,14 @@ import com.example.fcmexample.utils.TOKEN
 import com.example.fcmsender.FCMSender
 import com.example.fcmsender.MessageType
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import android.content.Intent
+
+
+
 
 class MainActivity : AppCompatActivity(), HasDefaultViewModelProviderFactory {
 
@@ -55,6 +61,9 @@ class MainActivity : AppCompatActivity(), HasDefaultViewModelProviderFactory {
             recycler.adapter = NotificationListAdapter(ItemClickListener {
 
             })
+            fab_sendActivity.setOnClickListener {
+                startActivity(Intent(this@MainActivity, SendActivity::class.java))
+            }
         }
     }
 }
