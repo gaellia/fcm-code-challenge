@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">FCM Example</string>
+    <string name="copy_device_token_to_clipboard">copy device token to clipboard</string>
+    <string name="this_page_is_only_accessible_via_notification">THIS PAGE IS ONLY ACCESSIBLE VIA NOTIFICATION</string>
+</resources>
