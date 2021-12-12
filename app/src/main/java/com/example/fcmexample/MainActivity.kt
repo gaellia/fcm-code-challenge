@@ -5,10 +5,8 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.Composable
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModel
@@ -17,16 +15,10 @@ import com.example.fcmexample.databinding.ActivityMainBinding
 import com.example.fcmexample.db.FCMExampleDB
 import com.example.fcmexample.utils.PREFS_NAME
 import com.example.fcmexample.utils.TOKEN
-import com.example.fcmsender.FCMSender
-import com.example.fcmsender.MessageType
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import android.content.Intent
-
-
+import com.example.fcmexample.sendActivity.SendActivity
 
 
 class MainActivity : AppCompatActivity(), HasDefaultViewModelProviderFactory {
