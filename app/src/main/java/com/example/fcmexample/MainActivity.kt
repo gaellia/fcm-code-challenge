@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity(), HasDefaultViewModelProviderFactory {
 
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: FCMViewModel by viewModels()
+    private val fcmViewModel: FCMViewModel by viewModels()
     private val clipboardManager by lazy { getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager }
     private val sharedPreferences by lazy { getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE) }
 
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(), HasDefaultViewModelProviderFactory {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         binding.apply {
             lifecycleOwner = this@MainActivity
-            viewModel = viewModel
+            viewModel = fcmViewModel
             copyClick = View.OnClickListener {
                 clipboardManager.setPrimaryClip(ClipData.newPlainText("token", sharedPreferences.getString(
                     TOKEN, "")))
