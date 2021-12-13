@@ -21,10 +21,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
@@ -96,9 +101,26 @@ private fun SendActivityContent(
             val coroutineScope = rememberCoroutineScope()
             val keyboardController = LocalSoftwareKeyboardController.current
 
+            val primaryPurple = Color(0xFF6200EE)
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(70.dp)
+                    .drawWithContent {
+                        drawContent()
+                        clipRect {
+                            val strokeWidth = Stroke.DefaultMiter
+                            val y = size.height - strokeWidth
+
+                            drawLine(
+                                color = primaryPurple,
+                                start = Offset(0f, y),
+                                end = Offset(size.width, y),
+                                strokeWidth = strokeWidth
+                            )
+                        }
+                    }
                     .padding(horizontal = 20.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -117,27 +139,28 @@ private fun SendActivityContent(
                         }
                     },
                     colors = SwitchDefaults.colors(
-                        uncheckedThumbColor = Color(0xFF6200EE),
+                        uncheckedThumbColor = primaryPurple,
                         uncheckedTrackColor = Color(0xFFA277E0)
                     )
                 )
 
             }
-            Text(modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .padding(top = 20.dp, bottom = 5.dp),
-                text = "Title",
-                style = MaterialTheme.typography.h6
-            )
             TextField(modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(70.dp),
+                placeholder = {
+                    Text(modifier = Modifier,
+                        text = "Title",
+                        style = MaterialTheme.typography.h6
+                    )
+                },
+                textStyle = MaterialTheme.typography.h6,
                 value = viewState.title,
                 singleLine = true,
-                shape = RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(0.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = primaryPurple,
+                    unfocusedIndicatorColor = primaryPurple,
                     textColor = Color.Black
                 ),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -147,21 +170,22 @@ private fun SendActivityContent(
                 onValueChange = { newTitle -> actioner(SendActivityAction.UpdateTitle(newTitle)) }
             )
 
-            Text(modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .padding(top = 20.dp, bottom = 5.dp),
-                text = "Topic",
-                style = MaterialTheme.typography.h6
-            )
             TextField(modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(70.dp),
+                placeholder = {
+                    Text(modifier = Modifier,
+                        text = "Topic",
+                        style = MaterialTheme.typography.h6
+                    )
+                },
+                textStyle = MaterialTheme.typography.h6,
                 value = viewState.topic,
                 singleLine = true,
-                shape = RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(0.dp),
                 colors = TextFieldDefaults.textFieldColors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = primaryPurple,
+                    unfocusedIndicatorColor = primaryPurple,
                     textColor = Color.Black
                 ),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -171,14 +195,7 @@ private fun SendActivityContent(
                 onValueChange = { newTopic -> actioner(SendActivityAction.UpdateTopic(newTopic)) }
             )
 
-            Text(modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .padding(top = 20.dp, bottom = 5.dp),
-                text = "Body",
-                style = MaterialTheme.typography.h6
-            )
             TextField(modifier = Modifier
-                .padding(horizontal = 20.dp)
                 .fillMaxWidth()
                 .heightIn(min = 150.dp, Dp.Infinity)
                 .bringIntoViewRequester(bringIntoViewRequester)
@@ -188,8 +205,15 @@ private fun SendActivityContent(
                         bringIntoViewRequester.bringIntoView()
                     }
                 },
+                placeholder = {
+                    Text(modifier = Modifier,
+                        text = "Body",
+                        style = MaterialTheme.typography.h6
+                    )
+                },
+                textStyle = MaterialTheme.typography.h6,
                 value = viewState.body,
-                shape = RoundedCornerShape(10.dp),
+                shape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
