@@ -3,18 +3,16 @@ package com.example.fcmexample.sendActivity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -29,12 +27,10 @@ import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.fcmexample.MainActivity
-import com.example.fcmexample.R
 import com.example.fcmexample.utils.PREFS_NAME
 import com.example.fcmexample.utils.TOKEN
 import com.example.fcmsender.MessageType
@@ -50,6 +46,7 @@ class SendActivity : AppCompatActivity() {
                 SendActivityComposable()
             }
         }
+        supportActionBar?.title = "Send a Message"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -221,6 +218,10 @@ private fun SendActivityContent(
                     topic = viewState.topic,
                     token = token?:""
                 ))
+
+                Toast.makeText(context, "Message Sent!", Toast.LENGTH_LONG).show()
+
+                // Go back to main activity
                 val intent = Intent(context, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 context.startActivity(intent)
