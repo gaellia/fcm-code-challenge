@@ -6,12 +6,15 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -24,10 +27,12 @@ import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.fcmexample.MainActivity
+import com.example.fcmexample.R
 import com.example.fcmexample.utils.PREFS_NAME
 import com.example.fcmexample.utils.TOKEN
 import com.example.fcmsender.MessageType
@@ -82,16 +87,25 @@ private fun SendActivityContent(
     val context = LocalContext.current
     val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     val token = prefs.getString(TOKEN, "")
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+    ) {
 
         val bringIntoViewRequester = remember { BringIntoViewRequester() }
         val coroutineScope = rememberCoroutineScope()
         val keyboardController = LocalSoftwareKeyboardController.current
 
         Row(
-            modifier = Modifier,
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            Text(modifier = Modifier,
+                text = "Type:  ${viewState.type}",
+                style = MaterialTheme.typography.h6
+            )
             Switch(
                 checked = viewState.type == MessageType.DATA,
                 onCheckedChange = {
@@ -101,20 +115,22 @@ private fun SendActivityContent(
                         actioner(SendActivityAction.UpdateMessageType(MessageType.DATA))
                     }
                 },
+                colors = SwitchDefaults.colors(
+                    uncheckedThumbColor = Color.Blue,
+                    uncheckedTrackColor = Color(R.color.colorPrimaryLight)
+                )
             )
-            Text(viewState.type.toString())
+
         }
-        Text("Title")
+        Text(modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .padding(top = 20.dp, bottom = 5.dp),
+            text = "Title",
+            style = MaterialTheme.typography.h6
+        )
         TextField(modifier = Modifier
             .padding(horizontal = 20.dp)
-            .fillMaxWidth()
-            .bringIntoViewRequester(bringIntoViewRequester)
-            .onFocusEvent {
-                if (it.isFocused) coroutineScope.launch {
-                    delay(100)
-                    bringIntoViewRequester.bringIntoView()
-                }
-            },
+            .fillMaxWidth(),
             value = viewState.title,
             singleLine = true,
             shape = RoundedCornerShape(10.dp),
@@ -130,7 +146,36 @@ private fun SendActivityContent(
             onValueChange = { newTitle -> actioner(SendActivityAction.UpdateTitle(newTitle)) }
         )
 
-        Text("Body")
+        Text(modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .padding(top = 20.dp, bottom = 5.dp),
+            text = "Topic",
+            style = MaterialTheme.typography.h6
+        )
+        TextField(modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .fillMaxWidth(),
+            value = viewState.topic,
+            singleLine = true,
+            shape = RoundedCornerShape(10.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                textColor = Color.Black
+            ),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {keyboardController?.hide()}
+            ),
+            onValueChange = { newTopic -> actioner(SendActivityAction.UpdateTopic(newTopic)) }
+        )
+
+        Text(modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .padding(top = 20.dp, bottom = 5.dp),
+            text = "Body",
+            style = MaterialTheme.typography.h6
+        )
         TextField(modifier = Modifier
             .padding(horizontal = 20.dp)
             .fillMaxWidth()
@@ -157,32 +202,6 @@ private fun SendActivityContent(
             onValueChange = {
                     newBody -> actioner(SendActivityAction.UpdateBody(newBody))
             }
-        )
-
-        Text("Topic")
-        TextField(modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .fillMaxWidth()
-            .bringIntoViewRequester(bringIntoViewRequester)
-            .onFocusEvent {
-                if (it.isFocused) coroutineScope.launch {
-                    delay(100)
-                    bringIntoViewRequester.bringIntoView()
-                }
-            },
-            value = viewState.topic,
-            singleLine = true,
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                textColor = Color.Black
-            ),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = {keyboardController?.hide()}
-            ),
-            onValueChange = { newTopic -> actioner(SendActivityAction.UpdateTopic(newTopic)) }
         )
 
         Button(
