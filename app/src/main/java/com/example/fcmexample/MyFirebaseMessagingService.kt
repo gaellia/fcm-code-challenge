@@ -46,9 +46,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             content.append("NOTIFICATION\n")
                 .append("[Title: ${remoteMessage.notification?.title}]\n")
                 .append("[Body: ${remoteMessage.notification?.body}]")
-                .append("\n\n")
+        } else {
+            content.append("DATA")
         }
-        content.append("DATA")
         remoteMessage.data.entries.forEach {
             content.append("\n[${it.key}: ${it.value}]")
         }
@@ -91,8 +91,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setColor(ContextCompat.getColor(this, R.color.colorAccent))
             .setColorized(true)
-            .setContentTitle(remoteMessage.data["Title"] ?: "")
-            .setContentText(remoteMessage.data["Body"] ?: "")
+            .setContentTitle(remoteMessage.data["Title"] ?: remoteMessage.notification?.title?: "")
+            .setContentText(remoteMessage.data["Body"] ?: remoteMessage.notification?.body?: "")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setGroup(channelId)
             .setAutoCancel(true)

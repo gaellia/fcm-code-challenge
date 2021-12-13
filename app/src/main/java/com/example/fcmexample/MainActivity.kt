@@ -51,7 +51,6 @@ class MainActivity : AppCompatActivity(), HasDefaultViewModelProviderFactory {
                 Snackbar.make(binding.root, "Copied to clipboard", Snackbar.LENGTH_SHORT).show()
             }
             recycler.adapter = NotificationListAdapter(ItemClickListener {
-
             })
             fab_sendActivity.setOnClickListener {
                 startActivity(Intent(this@MainActivity, SendActivity::class.java))
