@@ -7,5 +7,8 @@ import com.example.fcmexample.db.Notification
 
 @BindingAdapter("notificationList")
 fun RecyclerView.notificationList(cards: List<Notification>?) {
-    if (cards != null) (adapter as NotificationListAdapter).submitList(cards)
+    if (cards != null) {
+        (adapter as NotificationListAdapter).submitList(cards)
+        smoothScrollToPosition(cards.size-1)
+    }
 }
