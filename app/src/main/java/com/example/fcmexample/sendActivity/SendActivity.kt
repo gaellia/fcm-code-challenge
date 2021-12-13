@@ -17,6 +17,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -87,124 +89,130 @@ private fun SendActivityContent(
     val context = LocalContext.current
     val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     val token = prefs.getString(TOKEN, "")
-    Column(modifier = Modifier
-        .fillMaxSize()
-    ) {
 
-        val bringIntoViewRequester = remember { BringIntoViewRequester() }
-        val coroutineScope = rememberCoroutineScope()
-        val keyboardController = LocalSoftwareKeyboardController.current
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+    Box() {
+        Column(modifier = Modifier
+            .fillMaxSize()
         ) {
-            Text(modifier = Modifier,
-                text = "Type:  ${viewState.type}",
+
+            val bringIntoViewRequester = remember { BringIntoViewRequester() }
+            val coroutineScope = rememberCoroutineScope()
+            val keyboardController = LocalSoftwareKeyboardController.current
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(modifier = Modifier,
+                    text = "Type:  ${viewState.type}",
+                    style = MaterialTheme.typography.h6
+                )
+                Switch(
+                    checked = viewState.type == MessageType.DATA,
+                    onCheckedChange = {
+                        if (viewState.type == MessageType.DATA) {
+                            actioner(SendActivityAction.UpdateMessageType(MessageType.NOTIFICATION))
+                        } else {
+                            actioner(SendActivityAction.UpdateMessageType(MessageType.DATA))
+                        }
+                    },
+                    colors = SwitchDefaults.colors(
+                        uncheckedThumbColor = Color(0xFF6200EE),
+                        uncheckedTrackColor = Color(0xFFA277E0)
+                    )
+                )
+
+            }
+            Text(modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .padding(top = 20.dp, bottom = 5.dp),
+                text = "Title",
                 style = MaterialTheme.typography.h6
             )
-            Switch(
-                checked = viewState.type == MessageType.DATA,
-                onCheckedChange = {
-                    if (viewState.type == MessageType.DATA) {
-                        actioner(SendActivityAction.UpdateMessageType(MessageType.NOTIFICATION))
-                    } else {
-                        actioner(SendActivityAction.UpdateMessageType(MessageType.DATA))
-                    }
-                },
-                colors = SwitchDefaults.colors(
-                    uncheckedThumbColor = Color.Blue,
-                    uncheckedTrackColor = Color(R.color.colorPrimaryLight)
-                )
+            TextField(modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .fillMaxWidth(),
+                value = viewState.title,
+                singleLine = true,
+                shape = RoundedCornerShape(10.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    textColor = Color.Black
+                ),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {keyboardController?.hide()}
+                ),
+                onValueChange = { newTitle -> actioner(SendActivityAction.UpdateTitle(newTitle)) }
             )
 
-        }
-        Text(modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .padding(top = 20.dp, bottom = 5.dp),
-            text = "Title",
-            style = MaterialTheme.typography.h6
-        )
-        TextField(modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .fillMaxWidth(),
-            value = viewState.title,
-            singleLine = true,
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                textColor = Color.Black
-            ),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = {keyboardController?.hide()}
-            ),
-            onValueChange = { newTitle -> actioner(SendActivityAction.UpdateTitle(newTitle)) }
-        )
+            Text(modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .padding(top = 20.dp, bottom = 5.dp),
+                text = "Topic",
+                style = MaterialTheme.typography.h6
+            )
+            TextField(modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .fillMaxWidth(),
+                value = viewState.topic,
+                singleLine = true,
+                shape = RoundedCornerShape(10.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    textColor = Color.Black
+                ),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {keyboardController?.hide()}
+                ),
+                onValueChange = { newTopic -> actioner(SendActivityAction.UpdateTopic(newTopic)) }
+            )
 
-        Text(modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .padding(top = 20.dp, bottom = 5.dp),
-            text = "Topic",
-            style = MaterialTheme.typography.h6
-        )
-        TextField(modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .fillMaxWidth(),
-            value = viewState.topic,
-            singleLine = true,
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                textColor = Color.Black
-            ),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = {keyboardController?.hide()}
-            ),
-            onValueChange = { newTopic -> actioner(SendActivityAction.UpdateTopic(newTopic)) }
-        )
-
-        Text(modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .padding(top = 20.dp, bottom = 5.dp),
-            text = "Body",
-            style = MaterialTheme.typography.h6
-        )
-        TextField(modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .fillMaxWidth()
-            .heightIn(min = 150.dp, Dp.Infinity)
-            .bringIntoViewRequester(bringIntoViewRequester)
-            .onFocusEvent {
-                if (it.isFocused) coroutineScope.launch {
-                    delay(100)
-                    bringIntoViewRequester.bringIntoView()
+            Text(modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .padding(top = 20.dp, bottom = 5.dp),
+                text = "Body",
+                style = MaterialTheme.typography.h6
+            )
+            TextField(modifier = Modifier
+                .padding(horizontal = 20.dp)
+                .fillMaxWidth()
+                .heightIn(min = 150.dp, Dp.Infinity)
+                .bringIntoViewRequester(bringIntoViewRequester)
+                .onFocusEvent {
+                    if (it.isFocused) coroutineScope.launch {
+                        delay(100)
+                        bringIntoViewRequester.bringIntoView()
+                    }
+                },
+                value = viewState.body,
+                shape = RoundedCornerShape(10.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    textColor = Color.Black
+                ),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {keyboardController?.hide()}
+                ),
+                maxLines = 10,
+                onValueChange = {
+                        newBody -> actioner(SendActivityAction.UpdateBody(newBody))
                 }
-            },
-            value = viewState.body,
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                textColor = Color.Black
-            ),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = {keyboardController?.hide()}
-            ),
-            maxLines = 15,
-            onValueChange = {
-                    newBody -> actioner(SendActivityAction.UpdateBody(newBody))
-            }
-        )
+            )
+        }
 
-        Button(
+        FloatingActionButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(bottom = 16.dp, end = 16.dp),
             onClick = {
                 actioner(SendActivityAction.SendMessage(
                     type = viewState.type,
@@ -213,10 +221,14 @@ private fun SendActivityContent(
                     topic = viewState.topic,
                     token = token?:""
                 ))
-                context.startActivity(Intent(context, MainActivity::class.java))
+                val intent = Intent(context, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                context.startActivity(intent)
             },
+            contentColor = Color.White,
+            backgroundColor = Color(0xFF6200EE)
         ) {
-            Text("Send Message")
+            Icon(imageVector = Icons.Default.Send, contentDescription = null)
         }
     }
 }
